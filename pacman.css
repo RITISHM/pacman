@@ -1,0 +1,12 @@
+body {
+    text-align: center;
+    background-color: blue;
+}
+
+#board {
+    background-color: black;
+}
+
+#score {
+    color: white;
+}
