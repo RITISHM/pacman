@@ -126,25 +126,19 @@ function loadMap() {
             const y = r * tileSize;
 
             if (tileMapChar == "X") {
-                const wall = new Block(wallImage, x, y, tileSize, tileSize);
-                walls.add(wall);
+                walls.add(new Wall(wallImage, x, y, tileSize, tileSize));
             } else if (tileMapChar == "b") {
-                const ghost = new Block(blueGhostImage, x, y, tileSize, tileSize);
-                ghosts.add(ghost);
+                ghosts.add(new Ghost(blueGhostImage, x, y, tileSize, tileSize, "blue"));
             } else if (tileMapChar == "o") {
-                const ghost = new Block(orangeGhostImage, x, y, tileSize, tileSize);
-                ghosts.add(ghost);
+                ghosts.add(new Ghost(orangeGhostImage, x, y, tileSize, tileSize, "orange"));
             } else if (tileMapChar == "p") {
-                const ghost = new Block(pinkGhostImage, x, y, tileSize, tileSize);
-                ghosts.add(ghost);
+                ghosts.add(new Ghost(pinkGhostImage, x, y, tileSize, tileSize, "pink"));
             } else if (tileMapChar == "r") {
-                const ghost = new Block(redGhostImage, x, y, tileSize, tileSize);
-                ghosts.add(ghost);
+                ghosts.add(new Ghost(redGhostImage, x, y, tileSize, tileSize, "red"));
             } else if (tileMapChar == "P") {
-                pacman = new Block(pacmanRightImage, x, y, tileSize, tileSize);
+                pacman = new Pacman(pacmanRightImage, x, y, tileSize, tileSize);
             } else if (tileMapChar == " ") {
-                const food = new Block(null, x + 14, y + 14, 4, 4);
-                foods.add(food);
+                foods.add(new Food(x + 14, y + 14, 4, 4));
             }
         }
     }
@@ -161,19 +155,15 @@ function reloadMap() {
             const y = r * tileSize;
 
             if (tileMapChar == "b") {
-                const ghost = new Block(blueGhostImage, x, y, tileSize, tileSize);
-                ghosts.add(ghost);
+                ghosts.add(new Ghost(blueGhostImage, x, y, tileSize, tileSize, "blue"));
             } else if (tileMapChar == "o") {
-                const ghost = new Block(orangeGhostImage, x, y, tileSize, tileSize);
-                ghosts.add(ghost);
+                ghosts.add(new Ghost(orangeGhostImage, x, y, tileSize, tileSize, "orange"));
             } else if (tileMapChar == "p") {
-                const ghost = new Block(pinkGhostImage, x, y, tileSize, tileSize);
-                ghosts.add(ghost);
+                ghosts.add(new Ghost(pinkGhostImage, x, y, tileSize, tileSize, "pink"));
             } else if (tileMapChar == "r") {
-                const ghost = new Block(redGhostImage, x, y, tileSize, tileSize);
-                ghosts.add(ghost);
+                ghosts.add(new Ghost(redGhostImage, x, y, tileSize, tileSize, "red"));
             } else if (tileMapChar == "P") {
-                pacman = new Block(pacmanRightImage, x, y, tileSize, tileSize);
+                pacman = new Pacman(pacmanRightImage, x, y, tileSize, tileSize);
             }
         }
     }
@@ -336,16 +326,6 @@ function movePacman(e) {
     if (e.code == "ArrowLeft" || e.code == "KeyA") {
         pacman.updateDirection("L");
     }
-
-    if (pacman.direction == "U") {
-        pacman.image = pacmanUpImage;
-    } else if (pacman.direction == "D") {
-        pacman.image = pacmanDownImage;
-    } else if (pacman.direction == "L") {
-        pacman.image = pacmanLeftImage;
-    } else if (pacman.direction == "R") {
-        pacman.image = pacmanRightImage;
-    }
 }
 
 function collison(a, b) {
@@ -357,23 +337,53 @@ function collison(a, b) {
     );
 }
 
-class Block {
-    constructor(image, x, y, width, height, side) {
+// ========== ENTITY CLASSES ==========
+
+// Base class for all game objects
+class Entity {
+    constructor(image, x, y, width, height) {
         this.image = image;
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-
         this.startX = x;
         this.startY = y;
+    }
 
+    draw(ctx) {
+        if (this.image) {
+            ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+        }
+    }
+}
+
+// Static entity: Wall tile
+class Wall extends Entity {
+    constructor(image, x, y, width, height) {
+        super(image, x, y, width, height);
+    }
+}
+
+// Static entity: Food dot (no image, drawn as a filled rectangle)
+class Food extends Entity {
+    constructor(x, y, width, height) {
+        super(null, x, y, width, height);
+    }
+
+    draw(ctx) {
+        ctx.fillStyle = "yellow";
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+}
+
+// Base class for moving entities (Pacman and Ghosts)
+class Character extends Entity {
+    constructor(image, x, y, width, height) {
+        super(image, x, y, width, height);
         this.direction = "R";
         this.velocityX = 0;
         this.velocityY = 0;
-        if (side) {
-            this.side = side;
-        }
     }
 
     updateDirection(direction) {
@@ -381,7 +391,7 @@ class Block {
         this.direction = direction;
         this.updateVelocity();
 
-        // Test move
+        // Test move to check wall collision
         this.x += this.velocityX;
         this.y += this.velocityY;
 
@@ -403,29 +413,52 @@ class Block {
             this.updateVelocity();
         }
     }
+
     updateVelocity() {
         if (this.direction == "U") {
             this.velocityX = 0;
             this.velocityY = -tileSize / 4;
-        }
-
-        if (this.direction == "D") {
+        } else if (this.direction == "D") {
             this.velocityX = 0;
             this.velocityY = tileSize / 4;
-        }
-
-        if (this.direction == "R") {
+        } else if (this.direction == "R") {
             this.velocityX = tileSize / 4;
             this.velocityY = 0;
-        }
-
-        if (this.direction == "L") {
+        } else if (this.direction == "L") {
             this.velocityX = -tileSize / 4;
             this.velocityY = 0;
-        }
-        if (this.direction == "S") {
+        } else if (this.direction == "S") {
             this.velocityX = 0;
             this.velocityY = 0;
         }
+    }
+}
+
+// Pacman: handles directional sprite switching
+class Pacman extends Character {
+    constructor(image, x, y, width, height) {
+        super(image, x, y, width, height);
+    }
+
+    updateDirection(direction) {
+        super.updateDirection(direction);
+        // Update sprite based on current facing direction
+        if (this.direction == "U") {
+            this.image = pacmanUpImage;
+        } else if (this.direction == "D") {
+            this.image = pacmanDownImage;
+        } else if (this.direction == "L") {
+            this.image = pacmanLeftImage;
+        } else if (this.direction == "R") {
+            this.image = pacmanRightImage;
+        }
+    }
+}
+
+// Ghost: stores ghost name/type for future AI behaviors
+class Ghost extends Character {
+    constructor(image, x, y, width, height, name) {
+        super(image, x, y, width, height);
+        this.name = name; // "red", "pink", "blue", "orange"
     }
 }
