@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pac-Man Arcade Game Screen</title>
+    <link rel="stylesheet" href="../pacman.css">
+</head>
+
+<body>
+    <div class="game-container">
+        <!-- Game Header / Control Bar -->
+        <header class="game-header">
+            <a href="../index.html" class="nav-btn" style="padding: 0.4rem 0.8rem; font-size: 0.7rem;">
+                ← MENU
+            </a>
+            <h3 id="score">Score: 0</h3>
+            <button id="gameSoundBtn" class="audio-control-btn">
+                🔊 SOUND: ON
+            </button>
+        </header>
+
+        <!-- Canvas Game Board -->
+        <canvas id="board"></canvas>
+    </div>
+
+    <!-- Script declaration -->
+    <script src="../pacman.js"></script>
+</body>
+
+</html>

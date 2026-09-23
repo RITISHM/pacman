@@ -21,6 +21,9 @@ let pacmanLeftImage;
 let pacmanRightImage;
 let wallImage;
 
+//audios
+let eatSound;
+
 //X = wall, O = skip, P = pac man, ' ' = food
 //Ghosts: b = blue, o = orange, p = pink, r = red
 const tileMap = [
@@ -33,9 +36,9 @@ const tileMap = [
     "XXXX XXXX XXXX XXXX",
     "OOOX X       X XOOO",
     "XXXX X XXrXX X XXXX",
-    "O       bpo       O",
+    "O    X  bpo  X    O",
     "XXXX X XXXXX X XXXX",
-    "OOOX X       X XOOO",
+    "OOOX           XOOO",
     "XXXX X XXXXX X XXXX",
     "X        X        X",
     "X XX XXX X XXX XX X",
@@ -62,6 +65,7 @@ window.onload = function () {
     context = board.getContext("2d");
 
     loadImages();
+    loadAudio();
     loadMap();
     // console.log(walls.size);
     // console.log(foods.size);
@@ -76,31 +80,36 @@ window.onload = function () {
 
 function loadImages() {
     wallImage = new Image();
-    wallImage.src = "./images/wall.png";
+    wallImage.src = "../images/wall.png";
 
     blueGhostImage = new Image();
-    blueGhostImage.src = "./images/blueGhost.png";
+    blueGhostImage.src = "../images/blueGhost.png";
 
     redGhostImage = new Image();
-    redGhostImage.src = "./images/redGhost.png";
+    redGhostImage.src = "../images/redGhost.png";
 
     pinkGhostImage = new Image();
-    pinkGhostImage.src = "./images/pinkGhost.png";
+    pinkGhostImage.src = "../images/pinkGhost.png";
 
     orangeGhostImage = new Image();
-    orangeGhostImage.src = "./images/orangeGhost.png";
+    orangeGhostImage.src = "../images/orangeGhost.png";
 
     pacmanUpImage = new Image();
-    pacmanUpImage.src = "./images/pacmanUp.png";
+    pacmanUpImage.src = "../images/pacmanUp.png";
 
     pacmanDownImage = new Image();
-    pacmanDownImage.src = "./images/pacmanDown.png";
+    pacmanDownImage.src = "../images/pacmanDown.png";
 
     pacmanLeftImage = new Image();
-    pacmanLeftImage.src = "./images/pacmanLeft.png";
+    pacmanLeftImage.src = "../images/pacmanLeft.png";
 
     pacmanRightImage = new Image();
-    pacmanRightImage.src = "./images/pacmanRight.png";
+    pacmanRightImage.src = "../images/pacmanRight.png";
+}
+
+function loadAudio() {
+    eatSound = new Audio(src = "../audio/pacman-eating-food-dots.mp3");
+    eatSound.loop = true;
 }
 
 function loadMap() {
@@ -240,12 +249,23 @@ function move() {
             }
         }
     }
-
+    let ateFoodThisFrame = false;
     for (let food of foods) {
         if (collison(pacman, food)) {
             foods.delete(food);
             score += 1;
             scoreElement.innerHTML = `Score: ${score}`;
+            ateFoodThisFrame = true;
+        }
+    }
+    if (ateFoodThisFrame) {
+        if (eatSound.paused) {
+            eatSound.play().catch(err => console.log("Audio error:", err));
+        }
+    } else {
+        if (!eatSound.paused) {
+            eatSound.pause();
+            eatSound.currentTime = 0; // Optional: reset track position when stopping
         }
     }
 }
