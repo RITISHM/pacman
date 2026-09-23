@@ -4,15 +4,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pac-man</title>
+    <title>Pac-Man Retro Arcade Classic | Play Online</title>
+    <meta name="description" content="Play the retro 80s Pac-Man arcade classic game online in your browser. Eat dots, outsmart ghosts, and set high scores!">
     <link rel="stylesheet" href="pacman.css">
-    <script src="pacman.js"></script>
+    <script src="index.js" defer></script>
 </head>
 
 <body>
-    <h3 id="score">Score: 0</h3>
-    <br>
-    <canvas id="board"> </canvas>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="#" class="brand-logo">
+            <img src="images/pacmanRight.png" alt="Pac-Man Logo">
+            <span class="brand-title">PAC-MAN</span>
+        </a>
+        <div class="nav-links">
+            <button id="soundToggleBtn" class="audio-control-btn" title="Toggle Music">
+                🔊 BGM: OFF
+            </button>
+            <a href="pages/game-screen.html" class="nav-btn primary">PLAY GAME</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-container">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span>👾</span> RETRO 80S ARCADE CLASSIC
+            </div>
+            <h1 class="hero-title">CHASE THE DOTS,<br>OUTSMART THE GHOSTS!</h1>
+            <p class="hero-subtitle">
+                Step back into the golden age of video games. Navigate through the neon maze, gobble up power pellets, and outrun Blinky, Pinky, Inky & Clyde!
+            </p>
+            <div class="cta-group">
+                <a href="pages/game-screen.html" class="btn-arcade-play" id="playNowBtn">
+                    <span>🕹️</span> INSERT COIN - PLAY NOW
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <img src="images/hero-banner.png" alt="Pac-Man Hero Banner" class="hero-banner-img">
+        </div>
+    </header>
+
+    <!-- Animated Dot Track -->
+    <div class="pacman-track">
+        <div class="dots-container">
+            <div class="dot power"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot power"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot power"></div>
+        </div>
+    </div>
+
+    <!-- Meet the Ghosts Section -->
+    <section class="section-container" id="ghosts">
+        <div class="section-header">
+            <h2 class="section-title">MEET THE GHOST SQUAD</h2>
+            <p class="section-subtitle">Each ghost has its own unique behavior in the maze!</p>
+        </div>
+
+        <div class="cards-grid">
+            <!-- Blinky -->
+            <div class="card">
+                <img src="images/redGhost.png" alt="Red Ghost Blinky" class="card-icon-img">
+                <h3 class="card-title ghost-red">BLINKY (RED)</h3>
+                <p class="card-desc">The aggressive pursuer. Blinky relentlessly tracks Pac-Man's exact location across the maze.</p>
+            </div>
+
+            <!-- Pinky -->
+            <div class="card">
+                <img src="images/pinkGhost.png" alt="Pink Ghost Pinky" class="card-icon-img">
+                <h3 class="card-title ghost-pink">PINKY (PINK)</h3>
+                <p class="card-desc">The clever ambusher. Pinky tries to position ahead of Pac-Man to cut off escape routes.</p>
+            </div>
+
+            <!-- Inky -->
+            <div class="card">
+                <img src="images/blueGhost.png" alt="Blue Ghost Inky" class="card-icon-img">
+                <h3 class="card-title ghost-cyan">INKY (CYAN)</h3>
+                <p class="card-desc">The unpredictable ghost. Inky uses complex tactical movement dependent on Blinky's position.</p>
+            </div>
+
+            <!-- Clyde -->
+            <div class="card">
+                <img src="images/orangeGhost.png" alt="Orange Ghost Clyde" class="card-icon-img">
+                <h3 class="card-title ghost-orange">CLYDE (ORANGE)</h3>
+                <p class="card-desc">The shy roamer. Clyde chases Pac-Man until getting close, then retreats back to his corner.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Controls & How to Play -->
+    <section class="section-container" id="controls">
+        <div class="section-header">
+            <h2 class="section-title">HOW TO PLAY</h2>
+            <p class="section-subtitle">Master the arcade controls and eat all the dots to clean the maze!</p>
+        </div>
+
+        <div class="controls-grid">
+            <div class="card">
+                <h3 class="card-title">⌨️ CONTROLS</h3>
+                <div class="card-desc" style="display: flex; flex-direction: column; gap: 10px; align-items: center; margin-top: 10px;">
+                    <span>Move Up: <span class="key-badge">W</span> / <span class="key-badge">↑</span></span>
+                    <span>Move Down: <span class="key-badge">S</span> / <span class="key-badge">↓</span></span>
+                    <span>Move Left: <span class="key-badge">A</span> / <span class="key-badge">←</span></span>
+                    <span>Move Right: <span class="key-badge">D</span> / <span class="key-badge">→</span></span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">🏆 GAME OBJECTIVES</h3>
+                <p class="card-desc" style="text-align: left; line-height: 1.8;">
+                    • 🟡 <strong>Eat Pac-Dots:</strong> Clear all dots from the maze to score points.<br>
+                    • 👻 <strong>Avoid Ghosts:</strong> Contact with any ghost will force a respawn.<br>
+                    • 🌀 <strong>Tunnel Escape:</strong> Use side tunnels on left/right to wrap around the map!<br>
+                    • ⭐ <strong>High Score:</strong> Aim to top the high score board.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Audio Element for Landing Page BGM -->
+    <audio id="bgmAudio" src="audio/start-music.mp3" loop></audio>
+
+    <footer>
+        <p>© 2026 PAC-MAN ARCADE CLASSIC | INSPIRED BY NAMCO BANDAI</p>
+    </footer>
 </body>
 
 </html>
