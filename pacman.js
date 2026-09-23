@@ -108,7 +108,7 @@ function loadImages() {
 }
 
 function loadAudio() {
-    eatSound = new Audio(src = "../audio/pacman-eating-food-dots.mp3");
+    eatSound = new Audio("../audio/pacman-eating-food-dots.mp3");
     eatSound.loop = true;
 }
 
@@ -219,7 +219,7 @@ function move() {
     if (pacman.x == -tileSize && pacman.direction == "L") {
         pacman.x = boardWidth;
     } else if (pacman.x == boardWidth && pacman.direction == "R") {
-        pacman.x = -10;
+        pacman.x = -tileSize;
     }
     for (let wall of walls.values()) {
         if (collison(pacman, wall)) {
@@ -236,7 +236,7 @@ function move() {
         if (ghost.x == -tileSize && ghost.direction == "L") {
             ghost.x = boardWidth;
         } else if (ghost.x == boardWidth && ghost.direction == "R") {
-            ghost.x = -10;
+            ghost.x = -tileSize;
         }
         ghost.x += ghost.velocityX;
         ghost.y += ghost.velocityY;
@@ -244,7 +244,7 @@ function move() {
             if (collison(ghost, wall)) {
                 ghost.x -= ghost.velocityX;
                 ghost.y -= ghost.velocityY;
-                const newDirection = getGhostDirections(); //0-3
+                const newDirection = getGhostDirections(ghost);
                 ghost.updateDirection(newDirection);
             }
         }
@@ -258,6 +258,16 @@ function move() {
             ateFoodThisFrame = true;
         }
     }
+
+    if (foods.size === 0) {
+        // Prevent multiple alerts by removing eatSound pause check 
+        // to simplify. We'll just alert and let the loop run (empty map).
+        if (!window.winAlertShown) {
+            window.winAlertShown = true;
+            setTimeout(() => alert("You Win!"), 100);
+        }
+    }
+
     if (ateFoodThisFrame) {
         if (eatSound.paused) {
             eatSound.play().catch(err => console.log("Audio error:", err));
@@ -270,8 +280,47 @@ function move() {
     }
 }
 
-function getGhostDirections() {
-    return directions[Math.floor(Math.random() * 4)];
+function getGhostDirections(ghost) {
+    const validDirections = [];
+    const opposites = { "U": "D", "D": "U", "L": "R", "R": "L" };
+    const backward = opposites[ghost.direction];
+
+    for (let dir of directions) {
+        if (dir === backward) continue; // Don't reverse unless forced
+
+        // Test this direction
+        ghost.direction = dir;
+        ghost.updateVelocity();
+        ghost.x += ghost.velocityX;
+        ghost.y += ghost.velocityY;
+
+        let hitWall = false;
+        for (let wall of walls.values()) {
+            if (collison(ghost, wall)) {
+                hitWall = true;
+                break;
+            }
+        }
+
+        // Revert test
+        ghost.x -= ghost.velocityX;
+        ghost.y -= ghost.velocityY;
+
+        if (!hitWall) {
+            validDirections.push(dir);
+        }
+    }
+
+    // Revert to original direction so we don't mess up current state
+    ghost.direction = backward ? opposites[backward] : "R";
+    ghost.updateVelocity();
+
+    if (validDirections.length > 0) {
+        return validDirections[Math.floor(Math.random() * validDirections.length)];
+    } else {
+        // If stuck (dead end), must reverse
+        return backward || directions[Math.floor(Math.random() * 4)];
+    }
 }
 
 function movePacman(e) {
@@ -331,18 +380,27 @@ class Block {
         const prevDirection = this.direction;
         this.direction = direction;
         this.updateVelocity();
+
+        // Test move
         this.x += this.velocityX;
         this.y += this.velocityY;
 
-        //this is to prenvent the pacman from going through wall and changing direction when incase of collision
+        let hitWall = false;
         for (let wall of walls.values()) {
             if (collison(this, wall)) {
-                this.x -= this.velocityX;
-                this.y -= this.velocityY;
-                this.direction = prevDirection;
-                this.updateVelocity();
-                return;
+                hitWall = true;
+                break;
             }
+        }
+
+        // Always revert the test move
+        this.x -= this.velocityX;
+        this.y -= this.velocityY;
+
+        // If turn was invalid, revert direction
+        if (hitWall) {
+            this.direction = prevDirection;
+            this.updateVelocity();
         }
     }
     updateVelocity() {
