@@ -32,7 +32,7 @@ body {
   flex-direction: column;
   align-items: center;
   overflow-x: hidden;
-  background-image: 
+  background-image:
     radial-gradient(circle at 50% 20%, rgba(37, 99, 235, 0.15) 0%, transparent 50%),
     radial-gradient(circle at 80% 80%, rgba(255, 238, 0, 0.08) 0%, transparent 40%);
 }
@@ -203,8 +203,13 @@ body {
 }
 
 @keyframes pulse-glow {
-  0% { box-shadow: 0 0 15px rgba(255, 238, 0, 0.4); }
-  100% { box-shadow: 0 0 30px rgba(255, 238, 0, 0.8); }
+  0% {
+    box-shadow: 0 0 15px rgba(255, 238, 0, 0.4);
+  }
+
+  100% {
+    box-shadow: 0 0 30px rgba(255, 238, 0, 0.8);
+  }
 }
 
 .hero-visual {
@@ -268,13 +273,23 @@ body {
 }
 
 @keyframes move-dots {
-  from { transform: translateX(100vw); }
-  to { transform: translateX(-100%); }
+  from {
+    transform: translateX(100vw);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
 }
 
 @keyframes pulse-dot {
-  from { transform: scale(0.9); }
-  to { transform: scale(1.2); }
+  from {
+    transform: scale(0.9);
+  }
+
+  to {
+    transform: scale(1.2);
+  }
 }
 
 /* Features / Showcase Grid */
@@ -347,10 +362,25 @@ body {
 }
 
 /* Ghost Roster Colors */
-.ghost-red { color: var(--ghost-red); text-shadow: 0 0 10px rgba(255, 42, 42, 0.5); }
-.ghost-pink { color: var(--ghost-pink); text-shadow: 0 0 10px rgba(255, 184, 255, 0.5); }
-.ghost-cyan { color: var(--ghost-cyan); text-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
-.ghost-orange { color: var(--ghost-orange); text-shadow: 0 0 10px rgba(255, 184, 82, 0.5); }
+.ghost-red {
+  color: var(--ghost-red);
+  text-shadow: 0 0 10px rgba(255, 42, 42, 0.5);
+}
+
+.ghost-pink {
+  color: var(--ghost-pink);
+  text-shadow: 0 0 10px rgba(255, 184, 255, 0.5);
+}
+
+.ghost-cyan {
+  color: var(--ghost-cyan);
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.ghost-orange {
+  color: var(--ghost-orange);
+  text-shadow: 0 0 10px rgba(255, 184, 82, 0.5);
+}
 
 /* Controls guide */
 .controls-grid {
@@ -376,7 +406,7 @@ body {
   font-family: var(--font-arcade);
   font-size: 0.75rem;
   color: var(--pacman-yellow);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 /* Footer */
@@ -418,6 +448,32 @@ footer {
   font-size: 1.2rem;
   color: var(--pacman-yellow);
   text-shadow: 0 0 10px rgba(255, 238, 0, 0.5);
+}
+
+.game-stats {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.lives-display {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.life-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 5px rgba(255, 42, 42, 0.8));
+  transition: all 0.3s ease;
+}
+
+.life-icon.lost {
+  opacity: 0.2;
+  filter: grayscale(100%);
+  transform: scale(0.8);
 }
 
 #board {

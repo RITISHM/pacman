@@ -7,8 +7,6 @@ const tileSize = 40;
 const boardWidth = colCount * tileSize;
 const boardHeight = rowCount * tileSize;
 let context;
-let scoreElement;
-let score;
 
 //images
 let blueGhostImage;
@@ -23,6 +21,16 @@ let wallImage;
 
 //audios
 let eatSound;
+
+//stats
+let scoreElement;
+let score;
+let livesElement;
+let lives;
+
+//animation
+let lastBlink;
+let wait;
 
 //X = wall, O = skip, P = pac man, ' ' = food
 //Ghosts: b = blue, o = orange, p = pink, r = red
@@ -60,8 +68,11 @@ window.onload = function () {
     board = document.getElementById("board");
     scoreElement = document.getElementById("score");
     score = 0;
+    livesElement = this.document.getElementById("lives");
+    lives = 3;
     board.height = boardHeight;
     board.width = boardWidth;
+    wait = true;
     context = board.getContext("2d");
 
     loadImages();
@@ -116,7 +127,11 @@ function loadMap() {
     walls.clear();
     foods.clear();
     ghosts.clear();
-
+    for (let i = 0; i < 3; i++) {
+        if (i < lives) continue;
+        const life = livesElement.children[i];
+        life.classList.remove("lost");
+    }
     for (let r = 0; r < rowCount; r++) {
         for (let c = 0; c < colCount; c++) {
             const row = tileMap[r];
@@ -142,30 +157,47 @@ function loadMap() {
             }
         }
     }
+    wait = true;
+    setTimeout(() => { wait = false }, 1000);
 }
 
 function reloadMap() {
-    ghosts.clear();
-    for (let r = 0; r < rowCount; r++) {
-        for (let c = 0; c < colCount; c++) {
-            const row = tileMap[r];
-            const tileMapChar = row[c];
+    if (lives === 0) {
+        loadMap();
+        lives = 3;
+        score = 0;
+        scoreElement.innerHTML = score;
+    }
+    else {
+        ghosts.clear();
+        for (let r = 0; r < rowCount; r++) {
+            for (let c = 0; c < colCount; c++) {
+                const row = tileMap[r];
+                const tileMapChar = row[c];
 
-            const x = c * tileSize;
-            const y = r * tileSize;
+                const x = c * tileSize;
+                const y = r * tileSize;
 
-            if (tileMapChar == "b") {
-                ghosts.add(new Ghost(blueGhostImage, x, y, tileSize, tileSize, "blue"));
-            } else if (tileMapChar == "o") {
-                ghosts.add(new Ghost(orangeGhostImage, x, y, tileSize, tileSize, "orange"));
-            } else if (tileMapChar == "p") {
-                ghosts.add(new Ghost(pinkGhostImage, x, y, tileSize, tileSize, "pink"));
-            } else if (tileMapChar == "r") {
-                ghosts.add(new Ghost(redGhostImage, x, y, tileSize, tileSize, "red"));
-            } else if (tileMapChar == "P") {
-                pacman = new Pacman(pacmanRightImage, x, y, tileSize, tileSize);
+                if (tileMapChar == "b") {
+                    ghosts.add(new Ghost(blueGhostImage, x, y, tileSize, tileSize, "blue"));
+                } else if (tileMapChar == "o") {
+                    ghosts.add(new Ghost(orangeGhostImage, x, y, tileSize, tileSize, "orange"));
+                } else if (tileMapChar == "p") {
+                    ghosts.add(new Ghost(pinkGhostImage, x, y, tileSize, tileSize, "pink"));
+                } else if (tileMapChar == "r") {
+                    ghosts.add(new Ghost(redGhostImage, x, y, tileSize, tileSize, "red"));
+                } else if (tileMapChar == "P") {
+                    pacman = new Pacman(pacmanRightImage, x, y, tileSize, tileSize);
+                }
             }
         }
+        wait = true;
+        setTimeout(() => { wait = false }, 1000);
+    }
+    for (let i = 0; i < 3; i++) {
+        if (i < lives) continue;
+        const life = livesElement.children[i];
+        life.classList.add("lost");
     }
     for (let ghost of ghosts.values()) {
         const newDirection = directions[Math.floor(Math.random() * 4)]; //0-3
@@ -174,23 +206,41 @@ function reloadMap() {
 }
 
 function update() {
-    move();
+    if (pacman.isDying) {
+        blink();
+    }
+    else if (!pacman.isDying && !wait) {
+        move();
+    }
     draw();
     setTimeout(update, 1000 / 20);
+}
+
+function blink() {
+    const currentTime = Date.now();
+
+    if (!lastBlink || currentTime - lastBlink > 200) {
+        pacman.visible = !pacman.visible;
+        lastBlink = currentTime;
+    }
+
 }
 
 function draw() {
     context.clearRect(0, 0, board.width, board.height);
 
-    context.drawImage(
-        pacman.image,
-        pacman.x,
-        pacman.y,
-        pacman.width,
-        pacman.height,
-    );
     for (let ghost of ghosts) {
         context.drawImage(ghost.image, ghost.x, ghost.y, ghost.width, ghost.height);
+    }
+
+    if (pacman.visible) {
+        context.drawImage(
+            pacman.image,
+            pacman.x,
+            pacman.y,
+            pacman.width,
+            pacman.height,
+        );
     }
     for (let wall of walls) {
         context.drawImage(wall.image, wall.x, wall.y, wall.width, wall.height);
@@ -203,6 +253,10 @@ function draw() {
 }
 
 function move() {
+
+    if (pacman.direction !== pacman.newDirection) {
+        pacman.updateDirection(pacman.nextDirection);
+    }
     pacman.x += pacman.velocityX;
     pacman.y += pacman.velocityY;
 
@@ -221,7 +275,17 @@ function move() {
 
     for (let ghost of ghosts.values()) {
         if (collison(pacman, ghost)) {
-            reloadMap();
+            lives--;
+            pacman.isDying = true;
+            if (pacman.isDying) {
+                setTimeout(() => {
+                    pacman.isDying = false;
+                    reloadMap();
+                    pacman.visible = true;
+                }, 2000);
+
+            }
+            break;
         }
         if (ghost.x == -tileSize && ghost.direction == "L") {
             ghost.x = boardWidth;
@@ -246,6 +310,7 @@ function move() {
             score += 1;
             scoreElement.innerHTML = `Score: ${score}`;
             ateFoodThisFrame = true;
+            break;
         }
     }
 
@@ -315,16 +380,16 @@ function getGhostDirections(ghost) {
 
 function movePacman(e) {
     if (e.code == "ArrowUp" || e.code == "KeyW") {
-        pacman.updateDirection("U");
+        pacman.nextDirection = "U";
     }
     if (e.code == "ArrowDown" || e.code == "KeyS") {
-        pacman.updateDirection("D");
+        pacman.nextDirection = "D";
     }
     if (e.code == "ArrowRight" || e.code == "KeyD") {
-        pacman.updateDirection("R");
+        pacman.nextDirection = "R";
     }
     if (e.code == "ArrowLeft" || e.code == "KeyA") {
-        pacman.updateDirection("L");
+        pacman.nextDirection = "L";
     }
 }
 
@@ -438,6 +503,9 @@ class Character extends Entity {
 class Pacman extends Character {
     constructor(image, x, y, width, height) {
         super(image, x, y, width, height);
+        this.nextDirection = this.direction;
+        this.isDying = false;
+        this.visible = true;
     }
 
     updateDirection(direction) {
