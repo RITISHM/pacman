@@ -63,6 +63,7 @@ const tileMap = [
     "X                 X",
     "XXXXXXXXXXXXXXXXXXX",
 ];
+const tunnelRow = 9;
 
 const walls = new Set();
 const foods = new Set();
@@ -324,7 +325,11 @@ function move() {
         } else if (ghost.x >= boardWidth && ghost.direction == "R") {
             ghost.x = -tileSize;
         }
-
+        // at an intersection
+        if (ghost.x % tileSize === 0 && ghost.y % tileSize === 0) {
+            const newDirection = getGhostDirections(ghost);
+            ghost.updateDirection(newDirection);
+        }
         ghost.x += ghost.velocityX;
         ghost.y += ghost.velocityY;
         for (let wall of walls.values()) {
