@@ -97,10 +97,6 @@ window.onload = function () {
     // console.log(walls.size);
     // console.log(foods.size);
     // console.log(ghosts.size);
-    for (let ghost of ghosts.values()) {
-        const newDirection = directions[Math.floor(Math.random() * 4)]; //0-3
-        ghost.updateDirection(newDirection);
-    }
     update();
     document.addEventListener("keyup", movePacman);
 };
@@ -335,6 +331,8 @@ function move() {
             if (collison(ghost, wall)) {
                 ghost.x -= ghost.velocityX;
                 ghost.y -= ghost.velocityY;
+
+                //Calculate Grid Coordinate
                 const newDirection = getGhostDirections(ghost);
                 ghost.updateDirection(newDirection);
             }
@@ -369,49 +367,6 @@ function move() {
             eatSound.pause();
             eatSound.currentTime = 0; // Optional: reset track position when stopping
         }
-    }
-}
-
-function getGhostDirections(ghost) {
-    const validDirections = [];
-    const opposites = { "U": "D", "D": "U", "L": "R", "R": "L" };
-    const backward = opposites[ghost.direction];
-
-    for (let dir of directions) {
-        if (dir === backward) continue; // Don't reverse unless forced
-
-        // Test this direction
-        ghost.direction = dir;
-        ghost.updateVelocity();
-        ghost.x += ghost.velocityX;
-        ghost.y += ghost.velocityY;
-
-        let hitWall = false;
-        for (let wall of walls.values()) {
-            if (collison(ghost, wall)) {
-                hitWall = true;
-                break;
-            }
-        }
-
-        // Revert test
-        ghost.x -= ghost.velocityX;
-        ghost.y -= ghost.velocityY;
-
-        if (!hitWall) {
-            validDirections.push(dir);
-        }
-    }
-
-    // Revert to original direction so we don't mess up current state
-    ghost.direction = backward ? opposites[backward] : "R";
-    ghost.updateVelocity();
-
-    if (validDirections.length > 0) {
-        return validDirections[Math.floor(Math.random() * validDirections.length)];
-    } else {
-        // If stuck (dead end), must reverse
-        return backward || directions[Math.floor(Math.random() * 4)];
     }
 }
 
