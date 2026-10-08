@@ -21,7 +21,9 @@ let wallImage;
 
 //audios
 let eatSound;
-
+let failSound;
+let isMute;
+let muteBtn;
 //stats
 let scoreElement;
 let score;
@@ -32,6 +34,10 @@ let lives;
 let lastBlink;
 let wait;
 
+//game over screen
+let gameOverOverlay;
+let finalScore;
+let playAgainBtn;
 //X = wall, O = skip, P = pac man, ' ' = food
 //Ghosts: b = blue, o = orange, p = pink, r = red
 const tileMap = [
@@ -74,7 +80,17 @@ window.onload = function () {
     board.width = boardWidth;
     wait = true;
     context = board.getContext("2d");
+    isMute = true;
+    muteBtn = this.document.getElementById("gameSoundBtn");
+    gameOverOverlay = this.document.getElementById("gameOverOverlay");
+    finalScore = this.document.getElementById("finalScoreText");
+    playAgainBtn = this.document.getElementById("playAgainBtn");
 
+    playAgainBtn.addEventListener("click", () => {
+        loadMap();
+        gameOverOverlay.classList.add("hidden");
+    }
+    );
     loadImages();
     loadAudio();
     loadMap();
@@ -119,14 +135,24 @@ function loadImages() {
 }
 
 function loadAudio() {
-    eatSound = new Audio("../audio/pacman-eating-food-dots.mp3");
+    eatSound = new Audio("/audio/pacman-eating-food-dots.mp3");
     eatSound.loop = true;
+    failSound = new Audio("/audio/fail.mp3");
+    muteBtn.addEventListener("click", () => {
+        isMute = !isMute;
+        muteBtn.innerText = `🔊 SOUND: ${isMute ? "OFF" : " ON"}`;
+        failSound.muted = isMute;
+        eatSound.muted = isMute;
+    });
 }
 
 function loadMap() {
     walls.clear();
     foods.clear();
     ghosts.clear();
+    lives = 3;
+    score = 0;
+    scoreElement.innerHTML = `Score: ${score}`;
     for (let i = 0; i < 3; i++) {
         if (i < lives) continue;
         const life = livesElement.children[i];
@@ -158,15 +184,15 @@ function loadMap() {
         }
     }
     wait = true;
-    setTimeout(() => { wait = false }, 1000);
+    setTimeout(() => { wait = false }, 2000);
 }
 
 function reloadMap() {
     if (lives === 0) {
-        loadMap();
-        lives = 3;
-        score = 0;
-        scoreElement.innerHTML = score;
+        wait = true;
+        finalScore.innerHTML = `Score: ${score}`;
+        gameOverOverlay.classList.remove("hidden");
+        return;
     }
     else {
         ghosts.clear();
@@ -253,16 +279,21 @@ function draw() {
 }
 
 function move() {
-
-    if (pacman.direction !== pacman.newDirection) {
-        pacman.updateDirection(pacman.nextDirection);
+    if (pacman.direction !== pacman.nextDirection) {
+        if (pacman.nextDirection === "U" || pacman.nextDirection === "D") {
+            if (pacman.x >= 0 && pacman.x <= boardWidth - tileSize) {
+                pacman.updateDirection(pacman.nextDirection);
+            }
+        } else {
+            pacman.updateDirection(pacman.nextDirection);
+        }
     }
     pacman.x += pacman.velocityX;
     pacman.y += pacman.velocityY;
 
-    if (pacman.x == -tileSize && pacman.direction == "L") {
+    if (pacman.x <= -tileSize && pacman.direction == "L") {
         pacman.x = boardWidth;
-    } else if (pacman.x == boardWidth && pacman.direction == "R") {
+    } else if (pacman.x >= boardWidth && pacman.direction == "R") {
         pacman.x = -tileSize;
     }
     for (let wall of walls.values()) {
@@ -277,6 +308,8 @@ function move() {
         if (collison(pacman, ghost)) {
             lives--;
             pacman.isDying = true;
+            failSound.play().catch(err => console.log("Audio error:", err))
+                ;
             if (pacman.isDying) {
                 setTimeout(() => {
                     pacman.isDying = false;
@@ -287,11 +320,12 @@ function move() {
             }
             break;
         }
-        if (ghost.x == -tileSize && ghost.direction == "L") {
+        if (ghost.x <= -tileSize && ghost.direction == "L") {
             ghost.x = boardWidth;
-        } else if (ghost.x == boardWidth && ghost.direction == "R") {
+        } else if (ghost.x >= boardWidth && ghost.direction == "R") {
             ghost.x = -tileSize;
         }
+
         ghost.x += ghost.velocityX;
         ghost.y += ghost.velocityY;
         for (let wall of walls.values()) {
@@ -506,6 +540,7 @@ class Pacman extends Character {
         this.nextDirection = this.direction;
         this.isDying = false;
         this.visible = true;
+        this.updateVelocity();
     }
 
     updateDirection(direction) {
