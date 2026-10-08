@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pac-Man Retro Arcade Classic | Play Online</title>
     <meta name="description" content="Play the retro 80s Pac-Man arcade classic game online in your browser. Eat dots, outsmart ghosts, and set high scores!">
-    <link rel="stylesheet" href="pacman.css">
-    <script src="index.js" defer></script>
+    <link rel="stylesheet" href="/styles/pacman.css">
+    <script src="/scripts/index.js" defer></script>
 </head>
 
 <body>
@@ -15,14 +15,14 @@
     <!-- Navigation -->
     <nav class="navbar">
         <a href="#" class="brand-logo">
-            <img src="images/pacmanRight.png" alt="Pac-Man Logo">
+            <img src="/assets/images/pacmanRight.png" alt="Pac-Man Logo">
             <span class="brand-title">PAC-MAN</span>
         </a>
         <div class="nav-links">
             <button id="soundToggleBtn" class="audio-control-btn" title="Toggle Music">
                 🔊 BGM: OFF
             </button>
-            <a href="pages/game-screen.html" class="nav-btn primary">PLAY GAME</a>
+            <a href="/pages/game-screen.html" class="nav-btn primary">PLAY GAME</a>
         </div>
     </nav>
 
@@ -37,14 +37,14 @@
                 Step back into the golden age of video games. Navigate through the neon maze, gobble up power pellets, and outrun Blinky, Pinky, Inky & Clyde!
             </p>
             <div class="cta-group">
-                <a href="pages/game-screen.html" class="btn-arcade-play" id="playNowBtn">
+                <a href="/pages/game-screen.html" class="btn-arcade-play" id="playNowBtn">
                     <span>🕹️</span> INSERT COIN - PLAY NOW
                 </a>
             </div>
         </div>
 
         <div class="hero-visual">
-            <img src="images/hero-banner.png" alt="Pac-Man Hero Banner" class="hero-banner-img">
+            <img src="/assets/images/hero-banner.png" alt="Pac-Man Hero Banner" class="hero-banner-img">
         </div>
     </header>
 
@@ -74,28 +74,28 @@
         <div class="cards-grid">
             <!-- Blinky -->
             <div class="card">
-                <img src="images/redGhost.png" alt="Red Ghost Blinky" class="card-icon-img">
+                <img src="/assets/images/redGhost.png" alt="Red Ghost Blinky" class="card-icon-img">
                 <h3 class="card-title ghost-red">BLINKY (RED)</h3>
                 <p class="card-desc">The aggressive pursuer. Blinky relentlessly tracks Pac-Man's exact location across the maze.</p>
             </div>
 
             <!-- Pinky -->
             <div class="card">
-                <img src="images/pinkGhost.png" alt="Pink Ghost Pinky" class="card-icon-img">
+                <img src="/assets/images/pinkGhost.png" alt="Pink Ghost Pinky" class="card-icon-img">
                 <h3 class="card-title ghost-pink">PINKY (PINK)</h3>
                 <p class="card-desc">The clever ambusher. Pinky tries to position ahead of Pac-Man to cut off escape routes.</p>
             </div>
 
             <!-- Inky -->
             <div class="card">
-                <img src="images/blueGhost.png" alt="Blue Ghost Inky" class="card-icon-img">
+                <img src="/assets/images/blueGhost.png" alt="Blue Ghost Inky" class="card-icon-img">
                 <h3 class="card-title ghost-cyan">INKY (CYAN)</h3>
                 <p class="card-desc">The unpredictable ghost. Inky uses complex tactical movement dependent on Blinky's position.</p>
             </div>
 
             <!-- Clyde -->
             <div class="card">
-                <img src="images/orangeGhost.png" alt="Orange Ghost Clyde" class="card-icon-img">
+                <img src="/assets/images/orangeGhost.png" alt="Orange Ghost Clyde" class="card-icon-img">
                 <h3 class="card-title ghost-orange">CLYDE (ORANGE)</h3>
                 <p class="card-desc">The shy roamer. Clyde chases Pac-Man until getting close, then retreats back to his corner.</p>
             </div>
@@ -133,7 +133,7 @@
     </section>
 
     <!-- Audio Element for Landing Page BGM -->
-    <audio id="bgmAudio" src="audio/start-music.mp3" loop></audio>
+    <audio id="bgmAudio" src="/assets/audio/start-music.mp3" loop></audio>
 
     <footer>
         <p>© 2026 PAC-MAN ARCADE CLASSIC | INSPIRED BY NAMCO BANDAI</p>

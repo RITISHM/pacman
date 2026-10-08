@@ -107,37 +107,37 @@ window.onload = function () {
 
 function loadImages() {
     wallImage = new Image();
-    wallImage.src = "../images/wall.png";
+    wallImage.src = "/assets/images/wall.png";
 
     blueGhostImage = new Image();
-    blueGhostImage.src = "../images/blueGhost.png";
+    blueGhostImage.src = "/assets/images/blueGhost.png";
 
     redGhostImage = new Image();
-    redGhostImage.src = "../images/redGhost.png";
+    redGhostImage.src = "/assets/images/redGhost.png";
 
     pinkGhostImage = new Image();
-    pinkGhostImage.src = "../images/pinkGhost.png";
+    pinkGhostImage.src = "/assets/images/pinkGhost.png";
 
     orangeGhostImage = new Image();
-    orangeGhostImage.src = "../images/orangeGhost.png";
+    orangeGhostImage.src = "/assets/images/orangeGhost.png";
 
     pacmanUpImage = new Image();
-    pacmanUpImage.src = "../images/pacmanUp.png";
+    pacmanUpImage.src = "/assets/images/pacmanUp.png";
 
     pacmanDownImage = new Image();
-    pacmanDownImage.src = "../images/pacmanDown.png";
+    pacmanDownImage.src = "/assets/images/pacmanDown.png";
 
     pacmanLeftImage = new Image();
-    pacmanLeftImage.src = "../images/pacmanLeft.png";
+    pacmanLeftImage.src = "/assets/images/pacmanLeft.png";
 
     pacmanRightImage = new Image();
-    pacmanRightImage.src = "../images/pacmanRight.png";
+    pacmanRightImage.src = "/assets/images/pacmanRight.png";
 }
 
 function loadAudio() {
-    eatSound = new Audio("/audio/pacman-eating-food-dots.mp3");
+    eatSound = new Audio("/assets/audio/pacman-eating-food-dots.mp3");
     eatSound.loop = true;
-    failSound = new Audio("/audio/fail.mp3");
+    failSound = new Audio("/assets/audio/fail.mp3");
     muteBtn.addEventListener("click", () => {
         isMute = !isMute;
         muteBtn.innerText = `🔊 SOUND: ${isMute ? "OFF" : " ON"}`;
@@ -412,156 +412,3 @@ function getGhostDirections(ghost) {
     }
 }
 
-function movePacman(e) {
-    if (e.code == "ArrowUp" || e.code == "KeyW") {
-        pacman.nextDirection = "U";
-    }
-    if (e.code == "ArrowDown" || e.code == "KeyS") {
-        pacman.nextDirection = "D";
-    }
-    if (e.code == "ArrowRight" || e.code == "KeyD") {
-        pacman.nextDirection = "R";
-    }
-    if (e.code == "ArrowLeft" || e.code == "KeyA") {
-        pacman.nextDirection = "L";
-    }
-}
-
-function collison(a, b) {
-    return (
-        a.x < b.x + b.width &&
-        a.x + a.width > b.x &&
-        a.y < b.y + b.height &&
-        a.y + a.height > b.y
-    );
-}
-
-// ========== ENTITY CLASSES ==========
-
-// Base class for all game objects
-class Entity {
-    constructor(image, x, y, width, height) {
-        this.image = image;
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.startX = x;
-        this.startY = y;
-    }
-
-    draw(ctx) {
-        if (this.image) {
-            ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-        }
-    }
-}
-
-// Static entity: Wall tile
-class Wall extends Entity {
-    constructor(image, x, y, width, height) {
-        super(image, x, y, width, height);
-    }
-}
-
-// Static entity: Food dot (no image, drawn as a filled rectangle)
-class Food extends Entity {
-    constructor(x, y, width, height) {
-        super(null, x, y, width, height);
-    }
-
-    draw(ctx) {
-        ctx.fillStyle = "yellow";
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-    }
-}
-
-// Base class for moving entities (Pacman and Ghosts)
-class Character extends Entity {
-    constructor(image, x, y, width, height) {
-        super(image, x, y, width, height);
-        this.direction = "R";
-        this.velocityX = 0;
-        this.velocityY = 0;
-    }
-
-    updateDirection(direction) {
-        const prevDirection = this.direction;
-        this.direction = direction;
-        this.updateVelocity();
-
-        // Test move to check wall collision
-        this.x += this.velocityX;
-        this.y += this.velocityY;
-
-        let hitWall = false;
-        for (let wall of walls.values()) {
-            if (collison(this, wall)) {
-                hitWall = true;
-                break;
-            }
-        }
-
-        // Always revert the test move
-        this.x -= this.velocityX;
-        this.y -= this.velocityY;
-
-        // If turn was invalid, revert direction
-        if (hitWall) {
-            this.direction = prevDirection;
-            this.updateVelocity();
-        }
-    }
-
-    updateVelocity() {
-        if (this.direction == "U") {
-            this.velocityX = 0;
-            this.velocityY = -tileSize / 4;
-        } else if (this.direction == "D") {
-            this.velocityX = 0;
-            this.velocityY = tileSize / 4;
-        } else if (this.direction == "R") {
-            this.velocityX = tileSize / 4;
-            this.velocityY = 0;
-        } else if (this.direction == "L") {
-            this.velocityX = -tileSize / 4;
-            this.velocityY = 0;
-        } else if (this.direction == "S") {
-            this.velocityX = 0;
-            this.velocityY = 0;
-        }
-    }
-}
-
-// Pacman: handles directional sprite switching
-class Pacman extends Character {
-    constructor(image, x, y, width, height) {
-        super(image, x, y, width, height);
-        this.nextDirection = this.direction;
-        this.isDying = false;
-        this.visible = true;
-        this.updateVelocity();
-    }
-
-    updateDirection(direction) {
-        super.updateDirection(direction);
-        // Update sprite based on current facing direction
-        if (this.direction == "U") {
-            this.image = pacmanUpImage;
-        } else if (this.direction == "D") {
-            this.image = pacmanDownImage;
-        } else if (this.direction == "L") {
-            this.image = pacmanLeftImage;
-        } else if (this.direction == "R") {
-            this.image = pacmanRightImage;
-        }
-    }
-}
-
-// Ghost: stores ghost name/type for future AI behaviors
-class Ghost extends Character {
-    constructor(image, x, y, width, height, name) {
-        super(image, x, y, width, height);
-        this.name = name; // "red", "pink", "blue", "orange"
-    }
-}

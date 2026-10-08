@@ -5,23 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pac-Man Arcade Game Screen</title>
-    <link rel="stylesheet" href="../pacman.css">
+    <link rel="stylesheet" href="/styles/pacman.css">
 </head>
 
 <body>
     <div class="game-container">
         <!-- Game Header / Control Bar -->
         <header class="game-header">
-            <a href="../index.html" class="nav-btn" style="padding: 0.4rem 0.8rem; font-size: 0.7rem;">
+            <a href="/index.html" class="nav-btn" style="padding: 0.4rem 0.8rem; font-size: 0.7rem;">
                 ← MENU
             </a>
 
             <div class="game-stats">
                 <h3 id="score">Score: 0</h3>
                 <div id="lives" class="lives-display">
-                    <img src="../images/heart.png" alt="Life" class="life-icon">
-                    <img src="../images/heart.png" alt="Life" class="life-icon">
-                    <img src="../images/heart.png" alt="Life" class="life-icon">
+                    <img src="/assets/images/heart.png" alt="Life" class="life-icon">
+                    <img src="/assets/images/heart.png" alt="Life" class="life-icon">
+                    <img src="/assets/images/heart.png" alt="Life" class="life-icon">
                 </div>
             </div>
 
@@ -40,14 +40,16 @@
                 <p id="finalScoreText">Final Score: 0</p>
                 <div class="game-over-buttons">
                     <button id="playAgainBtn" class="nav-btn primary-btn">PLAY AGAIN</button>
-                    <a href="../index.html" class="nav-btn secondary-btn">MAIN MENU</a>
+                    <a href="/index.html" class="nav-btn secondary-btn">MAIN MENU</a>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Script declaration -->
-    <script src="../pacman.js"></script>
+    <script src="/scripts/game/classes.js"></script>
+    <script src="/scripts/game/input.js"></script>
+    <script src="/scripts/game/main.js"></script>
 </body>
 
 </html>
