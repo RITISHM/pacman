@@ -154,7 +154,6 @@ function loadMap() {
     score = 0;
     scoreElement.innerHTML = `Score: ${score}`;
     for (let i = 0; i < 3; i++) {
-        if (i < lives) continue;
         const life = livesElement.children[i];
         life.classList.remove("lost");
     }
@@ -182,6 +181,10 @@ function loadMap() {
                 foods.add(new Food(x + 14, y + 14, 4, 4));
             }
         }
+    }
+    for (let ghost of ghosts.values()) {
+        const newDirection = directions[Math.floor(Math.random() * 4)];
+        ghost.updateDirection(newDirection);
     }
     wait = true;
     setTimeout(() => { wait = false }, 2000);
