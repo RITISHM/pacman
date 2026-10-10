@@ -108,6 +108,19 @@ body {
   box-shadow: 0 0 25px rgba(255, 238, 0, 0.8);
 }
 
+.nav-btn.dashboard-btn {
+  background: rgba(0, 255, 255, 0.08);
+  color: var(--ghost-cyan);
+  border-color: var(--ghost-cyan);
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.2);
+}
+
+.nav-btn.dashboard-btn:hover {
+  background: rgba(0, 255, 255, 0.18);
+  box-shadow: 0 0 22px rgba(0, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
 /* Landing Page Hero */
 .hero-container {
   width: 100%;
@@ -200,6 +213,30 @@ body {
 .btn-arcade-play:hover {
   transform: scale(1.05);
   box-shadow: 0 0 35px rgba(255, 238, 0, 0.9);
+}
+
+.btn-arcade-secondary {
+  font-family: var(--font-arcade);
+  font-size: 0.85rem;
+  padding: 1rem 1.8rem;
+  background: rgba(0, 255, 255, 0.08);
+  color: var(--ghost-cyan);
+  text-decoration: none;
+  border-radius: 8px;
+  border: 2px solid var(--ghost-cyan);
+  cursor: pointer;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.25);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-arcade-secondary:hover {
+  background: rgba(0, 255, 255, 0.2);
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
 }
 
 @keyframes pulse-glow {

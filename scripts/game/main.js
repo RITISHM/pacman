@@ -29,6 +29,9 @@ let scoreElement;
 let score;
 let livesElement;
 let lives;
+let foodEaten;
+let ghostEncountered;
+let win;
 
 //animation
 let lastBlink;
@@ -149,6 +152,9 @@ function loadMap() {
     ghosts.clear();
     lives = 3;
     score = 0;
+    foodEaten = 0;
+    ghostEncountered = 0;
+    win = false;
     scoreElement.innerHTML = `Score: ${score}`;
     for (let i = 0; i < 3; i++) {
         const life = livesElement.children[i];
@@ -188,10 +194,12 @@ function loadMap() {
 }
 
 function reloadMap() {
+    ghostEncountered += 1;
     if (lives === 0) {
         wait = true;
         finalScore.innerHTML = `Score: ${score}`;
         gameOverOverlay.classList.remove("hidden");
+        saveGameData();
         return;
     }
     else {
@@ -347,7 +355,8 @@ function move() {
     for (let food of foods) {
         if (collison(pacman, food)) {
             foods.delete(food);
-            score += 1;
+            score += 10;
+            foodEaten += 1;
             scoreElement.innerHTML = `Score: ${score}`;
             ateFoodThisFrame = true;
             break;
@@ -357,7 +366,9 @@ function move() {
     if (foods.size === 0) {
         // Prevent multiple alerts by removing eatSound pause check 
         // to simplify. We'll just alert and let the loop run (empty map).
+        win = true;
         if (!window.winAlertShown) {
+            saveGameData();
             window.winAlertShown = true;
             setTimeout(() => alert("You Win!"), 100);
         }

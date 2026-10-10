@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Dashboard | Pac-Man</title>
+    <meta name="description"
+        content="Track your Pac-Man game history, high scores, and performance stats over your last 20 games.">
+    <link rel="stylesheet" href="/styles/pacman.css">
+    <link rel="stylesheet" href="/styles/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="/scripts/dashboard.js" defer></script>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="/index.html" class="brand-logo">
+            <img src="/assets/images/pacmanRight.png" alt="Pac-Man Logo" width="36">
+            <span class="brand-name">PAC-MAN</span>
+        </a>
+        <div class="nav-links">
+            <a href="/index.html" class="nav-btn">← MENU</a>
+            <a href="/pages/game-screen.html" class="nav-btn primary-btn">▶ PLAY</a>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="dashboard-hero">
+        <h1 class="dashboard-title">Player <span class="highlight">Dashboard</span></h1>
+        <p class="dashboard-subtitle">Your last 20 games at a glance</p>
+    </section>
+
+    <!-- ===== HERO HIGH SCORE BANNER ===== -->
+    <section class="hero-score-banner" id="heroBanner">
+        <div class="hero-score-left">
+            <div class="hero-score-label">ALL-TIME HIGH SCORE</div>
+            <div class="hero-score-value" id="highScore">—</div>
+            <div class="hero-score-sub">
+                Last Game: <span id="lastScore">—</span>
+            </div>
+        </div>
+        <div class="hero-score-right">🏆</div>
+    </section>
+
+    <!-- ===== BENTO ROW 1: Score Chart + Mini Stats ===== -->
+    <section class="bento-row" id="bentoRow1">
+
+        <!-- Left: Score Progress Chart (large) -->
+        <div class="bento-card bento-chart-card">
+            <h2 class="bento-card-title">Score Progress</h2>
+            <div class="bento-chart-wrapper">
+                <canvas id="scoreChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Right: 4 Mini Stat Cards -->
+        <div class="bento-mini-grid">
+
+            <div class="stat-card mini-card">
+                <div class="info-icon" data-tooltip="Total number of complete game sessions recorded (up to last 20).">ℹ
+                </div>
+                <div class="stat-icon">🎮</div>
+                <div class="stat-label">GAMES PLAYED</div>
+                <div class="stat-value" id="gamesPlayed">—</div>
+            </div>
+
+            <div class="stat-card mini-card">
+                <div class="info-icon"
+                    data-tooltip="Your average score calculated across all recorded games (up to last 20).">ℹ</div>
+                <div class="stat-icon">📊</div>
+                <div class="stat-label">AVG SCORE</div>
+                <div class="stat-value" id="avgScore">—</div>
+            </div>
+
+            <div class="stat-card mini-card">
+                <div class="info-icon" data-tooltip="Total food dots eaten across all recorded games (up to last 20).">ℹ
+                </div>
+                <div class="stat-icon">🍒</div>
+                <div class="stat-label">FOOD EATEN</div>
+                <div class="stat-value" id="totalFood">—</div>
+            </div>
+
+            <div class="stat-card mini-card">
+                <div class="info-icon"
+                    data-tooltip="Total number of times a ghost caught Pac-Man across all recorded games.">ℹ</div>
+                <div class="stat-icon">👻</div>
+                <div class="stat-label">GHOST ENCOUNTERS</div>
+                <div class="stat-value" id="totalGhosts">—</div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ===== BENTO ROW 2: Win Rate + Behavior + Encounters Chart ===== -->
+    <section class="bento-row" id="bentoRow2">
+
+        <!-- Left: Win Rate Doughnut -->
+        <div class="bento-card bento-doughnut-card">
+            <div class="info-icon"
+                data-tooltip="Percentage of games where you ate every single food dot and cleared the board.">ℹ</div>
+            <h2 class="bento-card-title">Win Rate</h2>
+            <div class="bento-doughnut-wrapper">
+                <canvas id="winRateChart"></canvas>
+            </div>
+            <div class="stat-value doughnut-value" id="winRate">—</div>
+        </div>
+
+        <!-- Center: Behavioral Analysis -->
+        <div class="bento-card bento-behavior-card">
+            <h2 class="bento-card-title">Behavioral Analysis</h2>
+            <div class="behavior-stack">
+
+                <div class="behavior-item">
+                    <div class="info-icon"
+                        data-tooltip="Compares your average score in your last 5 games vs the 5 before that. Shows if you're improving!">
+                        ℹ</div>
+                    <div class="behavior-label">Improvement Trend</div>
+                    <div class="behavior-badge" id="improvementTrend">
+                        <span id="trendIcon">📈</span>
+                        <span id="trendValue">—</span>
+                    </div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="info-icon"
+                        data-tooltip="Your play style based on score vs encounters. Aggressive = high risk, high reward. Cautious = safe plays.">
+                        ℹ</div>
+                    <div class="behavior-label">Play Style</div>
+                    <div class="behavior-badge play-style-badge" id="playStyle">—</div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="info-icon"
+                        data-tooltip="Percentage of games where Pac-Man was never caught by a ghost. Higher = better dodger!">
+                        ℹ</div>
+                    <div class="behavior-label">Ghost Avoidance</div>
+                    <div class="behavior-badge" id="avoidanceRate">—</div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="info-icon"
+                        data-tooltip="Average score earned per ghost encounter. Measures how well you play between mistakes.">
+                        ℹ</div>
+                    <div class="behavior-label">Efficiency Rating</div>
+                    <div class="behavior-badge" id="efficiencyRating">—</div>
+                </div>
+
+                <div class="behavior-item">
+                    <div class="info-icon"
+                        data-tooltip="The longest consecutive run of games where you didn't lose a single life.">ℹ</div>
+                    <div class="behavior-label">Best Streak</div>
+                    <div class="behavior-badge" id="bestStreak">— games</div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Right: Ghost Encounters Bar Chart -->
+        <div class="bento-card bento-bar-card">
+            <div class="info-icon"
+                data-tooltip="Ghost encounters per game over your last 20 sessions. Lower bars = better ghost avoidance.">
+                ℹ</div>
+            <h2 class="bento-card-title">Encounters / Game</h2>
+            <div class="bento-chart-wrapper">
+                <canvas id="encountersChart"></canvas>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ===== GAME HISTORY TABLE ===== -->
+    <section class="history-section">
+        <div class="history-card">
+            <h2 class="bento-card-title">Game History</h2>
+            <div class="table-wrapper">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Score</th>
+                            <th>Food Eaten</th>
+                            <th>Ghost Hits</th>
+                            <th>Result</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                        <!-- Filled by dashboard.js -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== EMPTY STATE ===== -->
+    <div class="empty-state hidden" id="emptyState">
+        <div class="empty-icon">👻</div>
+        <h2>No Games Yet!</h2>
+        <p>Play your first game to start tracking your progress.</p>
+        <a href="/pages/game-screen.html" class="nav-btn primary-btn"
+            style="margin-top: 1.5rem; display: inline-block;">▶ PLAY NOW</a>
+    </div>
+
+</body>
+
+</html>

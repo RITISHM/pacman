@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pac-Man Retro Arcade Classic | Play Online</title>
-    <meta name="description" content="Play the retro 80s Pac-Man arcade classic game online in your browser. Eat dots, outsmart ghosts, and set high scores!">
-    <link rel="stylesheet" href="/styles/pacman.css">
+    <meta name="description"
+        content="Play the retro 80s Pac-Man arcade classic game online in your browser. Eat dots, outsmart ghosts, and set high scores!">
+    <link rel="stylesheet" href="./styles/pacman.css">
     <script src="/scripts/index.js" defer></script>
 </head>
 
@@ -22,6 +23,7 @@
             <button id="soundToggleBtn" class="audio-control-btn" title="Toggle Music">
                 🔊 BGM: OFF
             </button>
+            <a href="/pages/dashboard.html" class="nav-btn dashboard-btn" id="dashboardBtn">📊 STATS</a>
             <a href="/pages/game-screen.html" class="nav-btn primary">PLAY GAME</a>
         </div>
     </nav>
@@ -34,11 +36,15 @@
             </div>
             <h1 class="hero-title">CHASE THE DOTS,<br>OUTSMART THE GHOSTS!</h1>
             <p class="hero-subtitle">
-                Step back into the golden age of video games. Navigate through the neon maze, gobble up power pellets, and outrun Blinky, Pinky, Inky & Clyde!
+                Step back into the golden age of video games. Navigate through the neon maze, gobble up power pellets,
+                and outrun Blinky, Pinky, Inky & Clyde!
             </p>
             <div class="cta-group">
                 <a href="/pages/game-screen.html" class="btn-arcade-play" id="playNowBtn">
                     <span>🕹️</span> INSERT COIN - PLAY NOW
+                </a>
+                <a href="/pages/dashboard.html" class="btn-arcade-secondary" id="heroStatsBtn">
+                    <span>📊</span> VIEW STATS
                 </a>
             </div>
         </div>
@@ -76,28 +82,32 @@
             <div class="card">
                 <img src="/assets/images/redGhost.png" alt="Red Ghost Blinky" class="card-icon-img">
                 <h3 class="card-title ghost-red">BLINKY (RED)</h3>
-                <p class="card-desc">The aggressive pursuer. Blinky relentlessly tracks Pac-Man's exact location across the maze.</p>
+                <p class="card-desc">The aggressive pursuer. Blinky relentlessly tracks Pac-Man's exact location across
+                    the maze.</p>
             </div>
 
             <!-- Pinky -->
             <div class="card">
                 <img src="/assets/images/pinkGhost.png" alt="Pink Ghost Pinky" class="card-icon-img">
                 <h3 class="card-title ghost-pink">PINKY (PINK)</h3>
-                <p class="card-desc">The clever ambusher. Pinky tries to position ahead of Pac-Man to cut off escape routes.</p>
+                <p class="card-desc">The clever ambusher. Pinky tries to position ahead of Pac-Man to cut off escape
+                    routes.</p>
             </div>
 
             <!-- Inky -->
             <div class="card">
                 <img src="/assets/images/blueGhost.png" alt="Blue Ghost Inky" class="card-icon-img">
                 <h3 class="card-title ghost-cyan">INKY (CYAN)</h3>
-                <p class="card-desc">The unpredictable ghost. Inky uses complex tactical movement dependent on Blinky's position.</p>
+                <p class="card-desc">The unpredictable ghost. Inky uses complex tactical movement dependent on Blinky's
+                    position.</p>
             </div>
 
             <!-- Clyde -->
             <div class="card">
                 <img src="/assets/images/orangeGhost.png" alt="Orange Ghost Clyde" class="card-icon-img">
                 <h3 class="card-title ghost-orange">CLYDE (ORANGE)</h3>
-                <p class="card-desc">The shy roamer. Clyde chases Pac-Man until getting close, then retreats back to his corner.</p>
+                <p class="card-desc">The shy roamer. Clyde chases Pac-Man until getting close, then retreats back to his
+                    corner.</p>
             </div>
         </div>
     </section>
@@ -112,7 +122,8 @@
         <div class="controls-grid">
             <div class="card">
                 <h3 class="card-title">⌨️ CONTROLS</h3>
-                <div class="card-desc" style="display: flex; flex-direction: column; gap: 10px; align-items: center; margin-top: 10px;">
+                <div class="card-desc"
+                    style="display: flex; flex-direction: column; gap: 10px; align-items: center; margin-top: 10px;">
                     <span>Move Up: <span class="key-badge">W</span> / <span class="key-badge">↑</span></span>
                     <span>Move Down: <span class="key-badge">S</span> / <span class="key-badge">↓</span></span>
                     <span>Move Left: <span class="key-badge">A</span> / <span class="key-badge">←</span></span>
