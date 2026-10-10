@@ -197,6 +197,14 @@ function reloadMap() {
     ghostEncountered += 1;
     if (lives === 0) {
         wait = true;
+        if (eatSound) {
+            eatSound.pause();
+            eatSound.currentTime = 0;
+        }
+        if (failSound) {
+            failSound.pause();
+            failSound.currentTime = 0;
+        }
         finalScore.innerHTML = `Score: ${score}`;
         gameOverOverlay.classList.remove("hidden");
         saveGameData();
@@ -316,8 +324,11 @@ function move() {
         if (collison(pacman, ghost)) {
             lives--;
             pacman.isDying = true;
-            failSound.play().catch(err => console.log("Audio error:", err))
-                ;
+            if (eatSound && !eatSound.paused) {
+                eatSound.pause();
+                eatSound.currentTime = 0;
+            }
+            failSound.play().catch(err => console.log("Audio error:", err));
             if (pacman.isDying) {
                 setTimeout(() => {
                     pacman.isDying = false;
